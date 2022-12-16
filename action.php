@@ -21,15 +21,15 @@ class action_plugin_oauthdoorkeeper extends Adapter
         $oauth = $this->getOAuthService();
         $data = array();
 
-        $url = $this->getConf('baseurl') . '/api/v1/me.json';
-
+        $url = $this->getConf('baseurl') . '/api/v1/accounts/verify_credentials';
+        $hostname = parse_url($this->getConf('baseurl'), PHP_URL_HOST);
 
         $raw = $oauth->request($url);
         $result = json_decode($raw, true);
 
-        $data['user'] = 'doorkeeper-' . $result['id'];
-        $data['name'] = 'doorkeeper-' . $result['id'];
-        $data['mail'] = $result['email'];
+        $data['user'] = $result['username'];
+        $data['name'] = $result['display_name'];
+        $data['mail'] = $result['username'] . '@'. $hostname;
 
         return $data;
     }
@@ -37,7 +37,7 @@ class action_plugin_oauthdoorkeeper extends Adapter
     /** @inheritDoc */
     public function getLabel()
     {
-        return 'Doorkeeper';
+        return 'Mastodon';
     }
 
     /** @inheritDoc */
